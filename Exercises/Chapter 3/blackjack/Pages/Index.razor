@@ -29,20 +29,20 @@
     int playerScore = 0, dealerScore = 0;
     string winner = string.Empty;
 
-    enum PlayerType
+    enum PlayerTypes
     {
         Dealer,
         Player
     }
 
-    enum Result
+    enum Results
     {
         Unknown,
         BlackJack,
         PlayerLost,
         DealerLost
     }
-    Result result = Result.Unknown;
+    Results result = Results.Unknown;
 
     protected override async Task OnInitializedAsync()
     {
