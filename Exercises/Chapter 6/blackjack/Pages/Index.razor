@@ -1,0 +1,117 @@
+﻿@page "/"
+@using BlackJack.Structs;
+
+<PageTitle>Blackjack</PageTitle>
+
+<h1>Blackjack</h1>
+
+@*
+    @foreach(var card in unicodeCards)
+    {
+        <span style='font-size:50px;'>@card</span>
+    }
+*@
+
+@* Cards *@
+@foreach(var card in deck)
+{
+    <span class="display-3">@card.Symbol</span>
+}
+
+@* Dealer *@
+<div class="text-danger display-3">Dealer</div>
+@foreach(var card in dealerCards)
+{
+    <span class="text-danger display-3">@card.Symbol</span>
+}
+<span class="text-danger display-3">&nbsp;@dealerScore</span>
+
+@* Player *@
+<div class="text-success display-3 mt-4">Player</div>
+@foreach(var card in playerCards)
+{
+    <span class="text-success display-3">@card.Symbol</span>
+}
+<span class="text-success display-3">&nbsp;@playerScore</span>
+
+@code
+{
+    string[] unicodeCards = { "🂡", "🂢", "🂣", "🂤", "🂥", "🂦", "🂧", "🂨", "🂩", "🂪", "🂫", "🂭", "🂮" };
+    const int numberOfCards = 52;
+    bool stay;
+    Card[] deck = new Card[numberOfCards];
+    Card[] playerCards = new Card[0];
+    Card[] dealerCards = new Card[0];
+    int playerScore = 0, dealerScore = 0;
+    string winner = string.Empty;
+
+    enum PlayerTypes
+    {
+        Dealer,
+        Player
+    }
+
+    enum Results
+    {
+        Unknown,
+        BlackJack,
+        PlayerLost,
+        DealerLost
+    }
+    Results result = Results.Unknown;
+    
+    void NewGame()
+    {
+        playerCards = new Card[0];
+        dealerCards = new Card[0];
+        playerScore = 0;
+        dealerScore = 0;
+        stay = false;
+        winner = string.Empty;
+        result = Results.Unknown;
+        var cards = CreateDeck();
+        deck = ShuffleDeck(cards);
+        DealCard(ref dealerCards, PlayerTypes.Dealer, 2);
+        DealCard(ref playerCards, PlayerTypes.Player, 2);
+    }
+
+    Card[] CreateDeck()
+    {
+        var cards = new Card[numberOfCards];
+        var index = 0;
+        for(int i = 0; i < 4; i++)
+            for(int j = 0; j < unicodeCards.Length; j++)
+            {
+                var value = j > 9 ? 10 : j + 1;
+                cards[index] = new Card(unicodeCards[j], value);
+                index++;
+            }
+
+        return cards;
+    }
+
+    Card[] ShuffleDeck(Card[] cards)
+    {
+        var shuffled = new Card[numberOfCards];
+        var random = new Random();
+        var position = 0;
+        while(position < numberOfCards)
+        {
+            var index = random.Next(cards.Where(c => !c.IsRemoved).Count());
+            shuffled[position++] = cards[index];
+            cards[index].IsRemoved = true;
+        }
+        return shuffled;
+    }
+
+    void DealCard(ref Card[] cards, PlayerTypes playerType, int takeCards = 1)
+    {
+        cards = cards.Concat(deck[0..2]).ToArray();
+        deck = deck[2..];
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        NewGame();
+    }
+}

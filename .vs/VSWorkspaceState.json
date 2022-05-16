@@ -1,7 +1,11 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\Exercises",
+    "\\Exercises\\Chapter 4",
+    "\\Exercises\\Chapter 4\\blackjack",
+    "\\Exercises\\Chapter 4\\blackjack\\Pages"
   ],
-  "SelectedNode": "\\C:\\Users\\jonasfagerberg\\Source\\Repos\\CSharpCrossPlatform",
+  "SelectedNode": "\\Exercises\\Chapter 4",
   "PreviewInSolutionExplorer": false
 }
