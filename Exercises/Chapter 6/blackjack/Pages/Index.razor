@@ -106,12 +106,10 @@
 
     void DealCard(ref Card[] cards, PlayerTypes playerType, int takeCards = 1)
     {
-        cards = cards.Concat(deck[0..2]).ToArray();
-        deck = deck[2..];
+        cards = cards.Concat(deck[0..takeCards]).ToArray();
+        deck = deck[takeCards..];
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-        NewGame();
-    }
+    protected override async Task OnInitializedAsync() => NewGame();
+    
 }
