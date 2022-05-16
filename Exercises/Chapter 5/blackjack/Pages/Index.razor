@@ -5,13 +5,6 @@
 
 <h1>Blackjack</h1>
 
-@*
-    @foreach(var card in unicodeCards)
-    {
-        <span style='font-size:50px;'>@card</span>
-    }
-*@
-
 @* Cards *@
 @foreach(var card in deck)
 {
@@ -72,7 +65,7 @@
                 index++;
             }
 
-        //deck = cards;
+        @* deck = cards; *@
 
         var shuffled = new Card[numberOfCards];
         var random = new Random();
