@@ -1,0 +1,33 @@
+﻿@page "/"
+@using BlackJack.Structs;
+
+<PageTitle>Blackjack</PageTitle>
+
+<h1>Blackjack</h1>
+
+@code
+{
+    string[] unicodeCards = { "🂡", "🂢", "🂣", "🂤", "🂥", "🂦", "🂧", "🂨", "🂩", "🂪", "🂫", "🂭", "🂮" };
+    const int numberOfCards = 52;
+    bool stay;
+    Card[] deck = new Card[numberOfCards];
+    Card[] playerCards = new Card[0];
+    Card[] dealerCards = new Card[0];
+    int playerScore = 0, dealerScore = 0;
+    string winner = string.Empty;
+
+    enum PlayerTypes
+    {
+        Dealer,
+        Player
+    }
+
+    enum Results
+    {
+        Unknown,
+        BlackJack,
+        PlayerLost,
+        DealerLost
+    }
+    Results result = Results.Unknown;
+}
