@@ -13,10 +13,12 @@
 *@
 
 @* Cards *@
-@foreach(var card in deck)
-{
-    <span class="display-3">@card.Symbol</span>
-}
+@*
+    @foreach(var card in deck)
+    {
+        <span class="display-3">@card.Symbol</span>
+    }
+*@
 
 @* Dealer *@
 <div class="text-danger display-3">Dealer</div>
@@ -33,6 +35,21 @@
     <span class="text-success display-3">@card.Symbol</span>
 }
 <span class="text-success display-3">&nbsp;@playerScore</span>
+<div class="mt-4">
+    @if(!stay)
+    {
+        <button class="btn btn-success" @onclick="(() => DealCard(ref playerCards, PlayerTypes.Player))">Draw Card</button>
+        <button class="btn btn-danger" @onclick="Stay">Stay</button>
+    }
+    else
+    {
+        <button class="btn btn-primary" @onclick="NewGame">New Game</button>
+    }
+</div>
+
+@* Winner *@
+<br />
+<div class="text-primary display-1">@winner</div>
 
 @code
 {
@@ -108,6 +125,68 @@
     {
         cards = cards.Concat(deck[0..takeCards]).ToArray();
         deck = deck[takeCards..];
+
+        if(playerType.Equals(PlayerTypes.Player))
+        {
+            CalculateScore(cards, out playerScore);
+            if(playerScore == 21 && cards.Count().Equals(2))
+            {
+                result = Results.BlackJack;
+                Stay();
+            }
+            if (playerScore > 21)
+            {
+                result = Results.PlayerLost;
+                Stay();
+            }
+        }
+        else
+        {
+            if (!stay) cards[0].IsHidden = true;
+            CalculateScore(cards, out dealerScore);
+            if (dealerScore > 21) result = Results.DealerLost;
+        }
+    }
+
+    void Stay()
+    {
+        stay = true;
+        dealerCards[0].IsHidden = false;
+        if(!result.Equals(Results.BlackJack) && !result.Equals(Results.PlayerLost)) DrawDealerCards();
+        DetermineWinner(result);
+    }
+
+    void CalculateScore(Card[] cards, out int score)
+    {
+        score = cards.Where(c => !c.IsHidden).Sum(c => c.Value);
+        var aces = cards.Where(c => c.Value.Equals(1) && !c.IsHidden); // Fetch all aces
+
+        // The score is low enough to add the ace with its high value of 11.
+        // Because 1 has already been added with the Sum function, only 10 is added.
+        foreach(var ace in aces)
+            if (score <= 11) score += 10;
+    }
+
+    void DrawDealerCards()
+    {
+        while(dealerScore < 17)
+            DealCard(ref dealerCards, PlayerTypes.Dealer);
+    }
+
+    void DetermineWinner(Results result)
+    {
+        if(result.Equals(Results.BlackJack) || result.Equals(Results.PlayerLost))
+        {
+            dealerCards[0].IsHidden = true;
+            dealerScore = dealerCards[1].Value;
+        }
+
+        if (result.Equals(Results.BlackJack)) winner = "Player wins with Blackjack";
+        else if(result.Equals(Results.PlayerLost)) winner = "Dealer wins";
+        else if(result.Equals(Results.DealerLost)) winner = "Player wins";
+        else if(playerScore > dealerScore) winner = "Player wins";
+        else if(playerScore < dealerScore) winner = "Dealer wins";
+        else winner = "Draw";
     }
 
     protected override async Task OnInitializedAsync() => NewGame();
