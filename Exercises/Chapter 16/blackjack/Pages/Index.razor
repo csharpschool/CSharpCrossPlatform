@@ -1,0 +1,71 @@
+﻿@page "/"
+@using BlackJack.Classes;
+
+<PageTitle>Blackjack</PageTitle>
+
+<h1>Blackjack</h1>
+
+@* Dealer *@
+<span class="text-danger display-3">Dealer:&nbsp;</span>
+@foreach(var card in game.GetDealerCards())
+{
+    <span class="text-danger display-3">@card.Symbol</span>
+}
+<span class="text-danger display-3">&nbsp;@game.GetDealerScore()</span>
+<br />
+
+@* Player *@
+<span class="text-success display-3 mt-4">Player:&nbsp;</span>
+@foreach(var card in game.GetPlayerCards())
+{
+    <span class="text-success display-3">@card.Symbol</span>
+}
+<span class="text-success display-3">&nbsp;@game.GetPlayerScore()</span>
+
+@* Buttons *@
+<div class="mt-4">
+    @if(!game.Stays)
+    {
+        <button class="btn btn-success" @onclick="(() => game.DealPlayerCard())">Draw Card</button>
+        <button class="btn btn-danger" @onclick="(() => game.Stay())">Stay</button>
+    }
+    else
+    {
+        <button class="btn btn-primary" @onclick="(() => game.NewGame())">New Game</button>
+    }
+</div>
+
+@* Scoreboard *@
+<br />
+<button class="btn btn-warning" @onclick="(() => board.ClearScoreboard())">Clear Scoreboard</button>
+<table class="table display-6">
+    <thead>
+        <tr>
+            <th>Player</th>
+            <th>Dealer</th>
+            <th>Winner</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var score in board.Scores)
+        {
+            <tr>
+                <td>@score.GetPlayerCards() @score.PlayerScore</td>
+                <td>@score.GetDealerCards() @score.DealerScore</td>
+                <td>@score.Winner</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code
+{
+    Blackjack game = new();
+    Scoreboard board = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        game.NewGame();
+        game.Subscribe(board.AddScore);
+    }
+}
