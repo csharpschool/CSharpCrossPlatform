@@ -1,0 +1,44 @@
+﻿@page "/"
+@using BlackJack.Classes;
+
+<PageTitle>Blackjack</PageTitle>
+
+<h1>Blackjack</h1>
+
+@* Dealer *@
+<div class="text-danger display-3">Dealer</div>
+@foreach(var card in game.GetDealerCards())
+{
+    <span class="text-danger display-3">@card.Symbol</span>
+}
+<span class="text-danger display-3">&nbsp;@game.GetDealerScore()</span>
+
+@* Player *@
+<div class="text-success display-3 mt-4">Player</div>
+@foreach(var card in game.GetPlayerCards())
+{
+    <span class="text-success display-3">@card.Symbol</span>
+}
+<span class="text-success display-3">&nbsp;@game.GetPlayerScore()</span>
+<div class="mt-4">
+    @if(!game.Stays)
+    {
+        <button class="btn btn-success" @onclick="(() => game.DealPlayerCard())">Draw Card</button>
+        <button class="btn btn-danger" @onclick="(() => game.Stay())">Stay</button>
+    }
+    else
+    {
+        <button class="btn btn-primary" @onclick="(() => game.NewGame())">New Game</button>
+    }
+</div>
+
+@* Winner *@
+<br />
+<div class="text-primary display-1">@game.Winner</div>
+
+@code
+{
+    Blackjack game = new();
+
+    protected override async Task OnInitializedAsync() => game.NewGame();
+}
