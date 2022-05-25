@@ -1,0 +1,46 @@
+﻿@page "/"
+@using Student.Classes;
+
+<PageTitle>Students</PageTitle>
+
+<h3>Enter Student Data</h3>
+
+<input @bind="@firstName" placeholder="First name" />
+<input @bind="@lastName" placeholder="Last name" />
+<input @bind="@age" placeholder="Age" />
+
+<button class="btn-sm btn-success" @onclick="CreateStudent">Create</button>
+<button class="btn-sm btn-danger" @onclick="Clear">Clear</button>
+
+<h4>@output</h4>
+
+@code {
+    string firstName, lastName, output;
+    int age;
+
+    void CreateStudent()
+    {
+        Student student = new(firstName, lastName, age);
+        output = $"{student.FullName} {student.age}";
+    }
+
+    void Clear()
+    {
+        lastName = string.Empty;
+        firstName = string.Empty;
+        output = string.Empty;
+        age = default;
+    }
+}
+
+@* <PageTitle>Students</PageTitle>
+
+<h1>Students</h1>
+
+<p>Student 1: name: @student1.FullName age: @student1.age</p>
+<p>Student 2: name: @student2.FullName age: @student2.age</p>
+
+@code {
+    Student student1 = new();
+    Student student2 = new("John", "Doe", 42);
+} *@
