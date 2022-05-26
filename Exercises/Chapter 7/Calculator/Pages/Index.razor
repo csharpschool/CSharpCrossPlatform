@@ -1,0 +1,38 @@
+﻿@page "/"
+@using Calculator.Classes
+
+<PageTitle>Calculator</PageTitle>
+
+<h3>Calculator</h3>
+
+<input @bind="@value1" placeholder="Enter a value" />
+<input @bind="@value2" placeholder="Enter a value" />
+<br />
+<button class="btn-sm btn-light" @onclick="Add">+</button>
+<button class="btn-sm btn-light" @onclick="Subtract">-</button>
+<button class="btn-sm btn-light" @onclick="Divide">/</button>
+<button class="btn-sm btn-light" @onclick="Multiply">x</button>
+
+<h4>@result</h4>
+
+@code {
+    string result = string.Empty;
+    double value1 = default, value2 = default;
+    
+    void Add() => StaticCalc.Add(value1, value2, out result);
+    void Subtract() => StaticCalc.Subtract(value1, value2, out result);
+    void Divide() => StaticCalc.Divide(value1, value2, out result);
+    void Multiply() => StaticCalc.Multiply(value1, value2, out result);
+    
+    @* Calc calc = new();
+
+    void Add() => calc.Add(value1, value2, out result);
+    void Subtract() => calc.Subtract(value1, value2, out result);
+    void Divide() => calc.Divide(value1, value2, out result);
+    void Multiply() => calc.Multiply(value1, value2, out result); *@
+
+    @* void Add() => result = $"{value1} + {value2} = {calc.Add(value1, value2)}";
+    void Subtract() => result = $"{value1} - {value2} = {calc.Subtract(value1, value2)}";
+    void Divide() => result = $"{value1} / {value2} = {calc.Divide(value1, value2)}";
+    void Multiply() => result = $"{value1} x {value2} = {calc.Multiply(value1, value2)}"; *@
+}
