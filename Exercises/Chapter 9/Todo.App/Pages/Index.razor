@@ -1,0 +1,35 @@
+﻿@page "/"
+@using Todo.Common.Classes
+
+<PageTitle>To-do</PageTitle>
+
+<h3>To-do</h3>
+
+<input @bind="@description" placeholder="Enter a value" />
+<button class="btn-sm btn-light" @onclick="AddTodo">+</button>
+
+<ul class="no-list-style">
+    @foreach (var todo in todos.Get())
+    {
+        <li>
+            <input class="vertically-align" type="checkbox" @onchange="@(e => CheckboxChanged(todo))" @attributes="todo.GetCheckboxAttributes()" />
+            <span @attributes="todo.GetDescriptionAttributes()">@todo.GetDescription()</span>
+            <input type="button" value="Delete" class="btn btn-link vertically-align" @onclick="@(e => Delete(todo))" />
+        </li>
+    }
+</ul>
+
+@code {
+    Todos todos = new();
+    string description = string.Empty;
+
+    void CheckboxChanged(Todo todo) => todo.CheckAttributes();
+    
+    void Delete(Todo todo) => todos.Remove(todo);
+    
+    void AddTodo()
+    {
+        todos.Add(description);
+        description = string.Empty;
+    }
+}

@@ -1,0 +1,13 @@
+.no-list-style {
+    list-style: none;
+}
+
+.vertically-align {
+    vertical-align: middle;
+    margin-bottom: 2px;
+}
+
+.completed {
+    text-decoration: line-through;
+}
+
