@@ -22,7 +22,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Todo.Common\Todo.Common.csproj" />
     <ProjectReference Include="..\Calculator.Common\Calculator.Common.csproj" />
   </ItemGroup>
 

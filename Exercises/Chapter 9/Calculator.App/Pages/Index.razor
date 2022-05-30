@@ -1,0 +1,83 @@
+﻿@page "/"
+@using Calculator.Common
+
+<PageTitle>Calculator</PageTitle>
+
+<h1>Calculator</h1>
+
+<input @bind="@input" style="width:145px;" readonly />
+<br />
+<button class="btn-sm btn-light" @onclick="@(e => AppendDigit(1))">1</button>
+<button class="btn-sm btn-light" @onclick="@(e => AppendDigit(2))">2</button>
+<button class="btn-sm btn-light" @onclick="@(e => AppendDigit(3))">3</button>
+<button class="btn-sm btn-light" @onclick="@(e => AddOperation(Operators.Multiply))">*</button>
+<br />
+<button class="btn-sm btn-light" @onclick="@(e => AppendDigit(4))">4</button>
+<button class="btn-sm btn-light" @onclick="@(e => AppendDigit(5))">5</button>
+<button class="btn-sm btn-light" @onclick="@(e => AppendDigit(6))">6</button>
+<button class="btn-sm btn-light" @onclick="@(e => AddOperation(Operators.Divide))">/</button>
+<br />
+<button class="btn-sm btn-light" @onclick="@(e => AppendDigit(7))">7</button>
+<button class="btn-sm btn-light" @onclick="@(e => AppendDigit(8))">8</button>
+<button class="btn-sm btn-light" @onclick="@(e => AppendDigit(9))">9</button>
+<button class="btn-sm btn-light" @onclick="@(e => AddOperation(Operators.Subtract))">-</button>
+<br />
+<button class="btn-sm btn-light btn-lg" @onclick="@(e => AppendDigit(0))">0</button>
+<button class="btn-sm btn-light" @onclick="@(e => AddOperation(Operators.Add))">+</button>
+<br />
+<button class="btn-sm btn-light" @onclick="ClearDigits">C</button>
+<button class="btn-sm btn-light cc-btn" @onclick="ClearCalculation">CC</button>
+<button class="btn-sm btn-light" @onclick="AddDecimal">.</button>
+<button class="btn-sm btn-light" @onclick="Calculate">=</button>
+
+<p>@output</p>
+
+@code {
+    string input = string.Empty;
+    string output = string.Empty;
+    Calc calc = new();
+
+    void AppendDigit(int digit)
+    {
+        if (input.Length.Equals(0) && digit.Equals(0)) return;
+        if (calc.Operations.Count.Equals(0)) output = string.Empty;
+        input += digit;
+    }
+
+    void AddDecimal()
+    {
+        if (!input.Contains('.'))
+            input += '.';
+    }
+
+    void ClearDigits() => input = string.Empty;
+    
+    void ClearCalculation()
+    {
+        calc.Clear();
+        output = string.Empty;
+        ClearDigits();
+    }
+
+    void AddOperation(Operators @operator)
+    {
+        if (input.Length.Equals(0) && @operator == Operators.Subtract)
+            input = "-";
+
+        var success = double.TryParse(input, out double value);
+        if (success)
+        {
+            calc.AddOperation(new Operation(value, @operator));
+            output = calc.Calculation;
+            ClearDigits();
+        }
+    }
+
+    void Calculate() 
+    {
+        AddOperation(Operators.Equals);
+        var result = calc.Calculate();
+        output = result.calcualtion;
+        input = result.result.ToString();
+    }
+}

@@ -1,0 +1,12 @@
+button {
+    width:33px;
+    height:33px;
+}
+
+button.btn-lg {
+    width:108px;
+}
+
+button.cc-btn{
+    padding-left:4px;
+}
