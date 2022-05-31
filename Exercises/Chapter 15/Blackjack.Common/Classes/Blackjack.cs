@@ -6,8 +6,6 @@ public class Blackjack
    Player player;
    Dealer dealer;
 
-   // Code omitted for brevity
-
    public Card[] GetPlayerCards() => player.Cards;
    public int GetPlayerScore() => player.Score;
    public Card[] GetDealerCards() => dealer.Cards;
