@@ -1,0 +1,87 @@
+﻿@page "/"
+@using Chemistry.Common;
+
+<PageTitle>Substances</PageTitle>
+
+<h1>Substances</h1>
+<div style="width: 500px;">
+    @if (error != string.Empty)
+    {
+        <div class="alert alert-danger" role="alert">
+            <strong>Error</strong> @error
+        </div>
+    }
+
+    <div class="input-group mb-3">
+        <input class="form-control" @bind="@newName" placeholder="Substance" />
+        <input class="form-control" @bind="@newMass" placeholder="Mass" />
+        <select class="form-select" @bind="@state">
+            @foreach (var state in chemistry.SateNames)
+            {
+                <option value=@state>@state</option>
+            }
+        </select>
+        <button class="btn btn-primary btn-padding" @onclick="AddSubstance">Add</button>
+    </div>
+
+    <div class="btn-group w-100" role="group">
+        <button class="btn btn-primary btn-padding" @onclick="@(e => Get(States.Solid))">Solid</button>
+        <button class="btn btn-primary btn-padding" @onclick="@(e => Get(States.Liquid))">Liquid</button>
+        <button class="btn btn-primary btn-padding" @onclick="@(e => Get(States.Gas))">Gas</button>
+        <button class="btn btn-primary btn-padding" @onclick="@(e => Get(States.Plasma))">Plasma</button>
+        <button class="btn btn-primary btn-padding" @onclick="GetAll">All</button>
+    </div>
+
+    <ul class="list-group ">
+        @foreach (var substance in substances)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <strong>@substance.Name (@substance.Mass)</strong>
+                @* Badge using Bootstrap ver. 5.1 *@
+                <span class="badge bg-secondary">@substance.State</span>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    Chemistry chemistry = new Chemistry();
+    List<ISubstance> substances = new List<ISubstance>();
+    string newName = string.Empty;
+    string newMass = string.Empty;
+    string error = string.Empty;
+    string state = string.Empty;
+
+    protected override void OnInitialized() => GetAll();
+    
+    void AddSubstance()
+    {
+        try
+        {
+            error = string.Empty;
+            var mass = int.Parse(newMass);
+            chemistry.Add(newName, mass, state);
+
+            newName = string.Empty;
+            newMass = string.Empty;
+            state = string.Empty;
+        }
+        catch
+        {
+            error = $"Could not add the substance.";
+        }
+    }
+
+    void GetAll()
+    {
+        error = string.Empty;
+        substances = chemistry.Get();
+    }
+
+    void Get(States state)
+    {
+        error = string.Empty;
+        substances = chemistry.Get(s => s.State.Equals(state));
+    }
+
+}
