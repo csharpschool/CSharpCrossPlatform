@@ -2,7 +2,7 @@ namespace Chemistry.Common;
 
 public class Chemistry
 {
-    List<ISubstance> Substances { get; } = new();
+    List<Substance> Substances { get; } = new();
     public string[] SateNames => Enum.GetNames(typeof(States));
     public States GetStateValue(string name) => (States)Enum.Parse(typeof(States), name);
 
@@ -14,7 +14,7 @@ public class Chemistry
         Add(new Liquid("Water", 1.0));
     }
 
-    public ISubstance CreateSubstance(string name, int mass, string state) =>
+    public Substance CreateSubstance(string name, int mass, string state) =>
     GetStateValue(state) switch
     {
         States.Liquid => new Liquid(name, mass),
@@ -29,7 +29,7 @@ public class Chemistry
     {
         try
         {
-            ISubstance substance = CreateSubstance(name, mass, state);
+            Substance substance = CreateSubstance(name, mass, state);
             Add(substance);
         }
         catch
@@ -38,8 +38,8 @@ public class Chemistry
         }
     }
 
-    public void Add(ISubstance substance) => Substances.Add(substance);
-    public List<ISubstance> Get() => Substances;
-    public List<ISubstance> Get(Func<ISubstance, bool> expression) =>
+    public void Add(Substance substance) => Substances.Add(substance);
+    public List<Substance> Get() => Substances;
+    public List<Substance> Get(Func<Substance, bool> expression) =>
         Substances.Where(expression).ToList();
 }

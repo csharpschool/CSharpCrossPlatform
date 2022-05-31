@@ -1,6 +1,6 @@
 namespace Chemistry.Common;
 
-public class Liquid : ISubstance
+public record Liquid : ISubstance
 {
     public string Name { get; }
     public double Mass { get; }

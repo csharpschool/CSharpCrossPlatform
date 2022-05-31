@@ -1,6 +1,6 @@
 namespace Chemistry.Common;
 
-public class Plasma : ISubstance
+public record Plasma : ISubstance
 {
     public string Name { get; }
     public double Mass { get; }

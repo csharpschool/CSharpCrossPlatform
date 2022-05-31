@@ -1,6 +1,6 @@
 namespace Chemistry.Common;
 
-public class Solid : ISubstance
+public record Solid : ISubstance
 {
     public string Name { get; }
     public double Mass { get; }

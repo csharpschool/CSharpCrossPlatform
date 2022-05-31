@@ -1,6 +1,6 @@
 namespace Chemistry.Common;
 
-public class Gas : ISubstance
+public record Gas : ISubstance
 {
     public string Name { get; }
     public double Mass { get; }
