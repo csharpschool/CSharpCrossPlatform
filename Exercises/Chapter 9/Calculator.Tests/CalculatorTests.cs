@@ -48,10 +48,14 @@ public class CalculatorTests
     {
         var calculator = new Calc();
         var operation1 = new Operation(10, Operators.Multiply);
-        var operation2 = new Operation(20, Operators.Divide);   // 10 x 20  = 200
-        var operation3 = new Operation(2, Operators.Add);       // 200 / 2  = 100
-        var operation4 = new Operation(30, Operators.Subtract); // 100 + 30 = 130
-        var operation5 = new Operation(50, Operators.Equals);   // 130 - 50 = 80
+        var operation2 = new Operation(20, Operators.Divide);
+        // 10 x 20  = 200
+        var operation3 = new Operation(2, Operators.Add);
+        // 200 / 2  = 100
+        var operation4 = new Operation(30, Operators.Subtract);
+        // 100 + 30 = 130
+        var operation5 = new Operation(50, Operators.Equals);
+        // 130 - 50 = 80
 
         calculator.AddOperation(operation1);
         calculator.AddOperation(operation2);
@@ -77,5 +81,4 @@ public class CalculatorTests
         Assert.Equal(1, count);
         Assert.Empty(calculator.Operations);
     }
-
 }

@@ -25,6 +25,26 @@ public class OperationTests
     }
 
     [Fact]
+    public void CanChangeValueWithExtensionMethodsInAnOperationInstance()
+    {
+        var operation = new Operation(10, Operators.Multiply);
+        
+        operation.ChangeValue(20);
+
+        Assert.Equal(20, operation.Value);
+    }
+
+    [Fact]
+    public void CanChangeOperatorWithExtensionMethodsInAnOperationInstance()
+    {
+        var operation = new Operation(10, Operators.Multiply);
+        
+        operation.ChangeOperator(Operators.Divide);
+
+        Assert.Equal(Operators.Divide, operation.Operator);
+    }
+
+    [Fact]
     public void CanCalculateWithTheCalculateExtensionMethodInAnOperationInstance()
     {
         var operation1 = new Operation(10, Operators.Multiply);

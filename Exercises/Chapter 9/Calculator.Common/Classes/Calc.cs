@@ -1,4 +1,5 @@
 namespace Calculator.Common;
+
 public class Calc
 {
     public string Calculation 
@@ -13,7 +14,7 @@ public class Calc
             return output;
         } 
     }
-    public List<Operation> Operations { get; } = new List<Operation>();
+    public List<Operation> Operations { get; } = new();
 
     public void AddOperation(Operation operation) => Operations.Add(operation);
     public void Clear() => Operations.Clear();
@@ -35,6 +36,9 @@ public class Calc
 
         try
         {
+            if(Operations.Count().Equals(0)) return double.NaN;
+            if(Operations.Count().Equals(1)) return Operations.First().Value;
+
             foreach (var operation in Operations)
             {
                 if (result == default) result = new Operation(operation.Value, operation.Operator);

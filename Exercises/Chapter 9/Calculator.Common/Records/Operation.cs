@@ -1,6 +1,6 @@
 namespace Calculator.Common;
 
-public class Operation
+public record Operation
 {
     public double Value { get; private set; }
     public Operators Operator { get; private set; } = default;
