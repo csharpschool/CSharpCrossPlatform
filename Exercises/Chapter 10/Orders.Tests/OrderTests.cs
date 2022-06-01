@@ -3,59 +3,16 @@ namespace Orders.Tests;
 public class OrderTests
 {
     [Fact]
-    public void CreateLineItemExceptionWrongOrderId()
+    public void CanCreateOrderInstance()
     {
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var item = new LineItem(-1, 1, "Product 1", 2, 10, 50);
-        });
-    }
+        Order order = new(1, "John Doe", "Address 1");
 
-    [Fact]
-    public void CreateLineItemExceptionWrongId()
-    {
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var item = new LineItem(1, -1, "Product 1", 2, 10, 50);
-        });
+        Assert.NotNull(order);
+        Assert.Equal(1, order.Id);
+        Assert.Equal("John Doe", order.Customer);
+        Assert.Equal("Address 1", order.Address);
+        Assert.Empty(order.Items);
     }
-
-    [Fact]
-    public void CreateLineItemExceptionEmptyProductName()
-    {
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var item = new LineItem(1, 1, "", 2, 10, 50);
-        });
-    }
-
-    [Fact]
-    public void CreateLineItemExceptionWrongQuantity()
-    {
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var item = new LineItem(1, 1, "Product 1", 0, 10, 50);
-        });
-    }
-
-    [Fact]
-    public void CreateLineItemExceptionWrongPrice()
-    {
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var item = new LineItem(1, 1, "Product 1", 2, 0, 50);
-        });
-    }
-
-    [Fact]
-    public void CreateLineItemExceptionWrongVat()
-    {
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var item = new LineItem(1, 1, "Product 1", 0, 10, -1);
-        });
-    }
-
 
     [Fact]
     public void CreateOrderExceptionWrongId()
@@ -81,26 +38,6 @@ public class OrderTests
         Assert.Throws<ArgumentException>(() =>
         {
             var order = new Order(1, "Customer", "");
-        });
-    }
-
-    [Fact]
-    public void AddMethodInOrderFactoryThrowsExceptionForWrongCustomerData()
-    {
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var orderFactory = new OrderFactory();
-            orderFactory.Add("", "Address 1");
-        });
-    }
-
-    [Fact]
-    public void AddMethodInOrderFactoryThrowsExceptionForWrongAddressData()
-    {
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var orderFactory = new OrderFactory();
-            orderFactory.Add("Customer 1", "");
         });
     }
 }
