@@ -1,11 +1,11 @@
 namespace Orders.Common;
 
-public class Order
+public record Order
 {
     public int Id { get; } = default;
     public string Customer { get; } = string.Empty;
     public string Address { get; } = string.Empty;
-    public List<LineItem> Items { get; } = new List<LineItem>();
+    public List<LineItem> Items { get; } = new();
     
     public Order(int id, string customer, string address)
     {
@@ -44,7 +44,6 @@ public class Order
                 throw ex;
             }
         }
-        
 
     public void GetOrderTotalAndVat(out double total, out double vat) => 
         (total, vat) = (Items.Sum(i => i.Total), Items.Sum(i => i.VatCost));

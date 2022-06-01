@@ -1,20 +1,20 @@
 namespace Orders.Common;
 
-    public class OrderFactory
-    {
-        List<Order> Orders { get; } = new List<Order>();
+public class OrderFactory
+{
+    List<Order> Orders { get; } = new List<Order>();
 
-        public void Add(string customer, string address)
+    public void Add(string customer, string address)
+    {
+        try
         {
-            try
-            {
-                Orders.Add(new Order(Orders.Count + 1, customer, address));
-            }
-            catch
-            {
-                throw;
-            }
+            Orders.Add(new Order(Orders.Count + 1, customer, address));
         }
-        public List<Order> Get() => Orders;
-        public Order? Latest() => Orders.LastOrDefault();
+        catch
+        {
+            throw;
+        }
     }
+    public List<Order> Get() => Orders;
+    public Order? Latest() => Orders.LastOrDefault();
+}

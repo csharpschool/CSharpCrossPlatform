@@ -15,7 +15,7 @@ public class OrderFactoryTests
     }
 
     [Fact]
-    public void AddMethodInOrderFactoryThrowsExceptionForWrongCustomerData()
+    public void AddMethodInOrderFactoryThrowsExceptionForWrongCustomerName()
     {
         Assert.Throws<ArgumentException>(() =>
         {
@@ -25,7 +25,7 @@ public class OrderFactoryTests
     }
 
     [Fact]
-    public void AddMethodInOrderFactoryThrowsExceptionForWrongAddressData()
+    public void AddMethodInOrderFactoryThrowsExceptionForWrongAddress()
     {
         Assert.Throws<ArgumentException>(() =>
         {
