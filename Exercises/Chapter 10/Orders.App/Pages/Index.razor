@@ -1,9 +1,120 @@
 ﻿@page "/"
+@using Orders.Common;
 
-<PageTitle>Index</PageTitle>
+<PageTitle>Orders</PageTitle>
 
-<h1>Hello, world!</h1>
+<h1>Orders</h1>
 
-Welcome to your new app.
+<div class="container-width">
+    <div class="input-group mb-3">
+        <input @bind="@customer" class="form-control" placeholder="Customer Name" />
+        <input @bind="@address" class="form-control" placeholder="Address" />
+        <button class="btn btn-primary" @onclick="AddOrder">Add</button>
+    </div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+    <div class="btn-group mb-4">
+        @foreach (var order in orders.Get())
+        {
+            <button class="btn btn-outline-success" @onclick="@(e => CurrentOrder(order))">@order.Id: @order.Customer (@order.Address)</button>
+        }
+    </div>
+
+    @if (currentOrder != default)
+    {
+        <h5>Line items for: @currentOrder.Id @currentOrder.Customer (@currentOrder.Address)</h5>
+
+        <div class="input-group mb-4">
+            <label class="input-group-text" for="inputProductName">Product</label>
+            <input @bind="@product" class="form-control" id="inputProductName" />
+            <label class="input-group-text" for="inputQuantity">#</label>
+            <input @bind="@quantity" class="form-control" id="inputQuantity" />
+            <label class="input-group-text" for="inputPrice">$</label>
+            <input @bind="@price" class="form-control" id="inputPrice" />
+            <label class="input-group-text" for="inputVat">VAT</label>
+            <input @bind="@vat" class="form-control" id="inputVat" />
+            <button class="btn btn-primary" @onclick="AddLineItem">Add</button>
+        </div>
+
+        if(currentOrder.Items.Count > 0)
+        { 
+            <table class="table table-striped">
+                <thead class="table-success">
+                    <tr>
+                        <th scope="col">Id</th>
+                        <th scope="col">Product</th>
+                        <th scope="col">Qty</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">VAT %</th>
+                        <th scope="col">VAT $</th>
+                        <th scope="col">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in currentOrder.Items)
+                    {
+                        <tr>
+                            <th scope="row">@item.Id</th>
+                            <td>@item.Product</td>
+                            <td>@item.Quantity</td>
+                            <td>@item.Price</td>
+                            <td>@(item.Vat * 100)</td>
+                            <td>@item.VatCost</td>
+                            <td>@item.Total</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    }
+</div>
+
+@code{
+    Order? currentOrder = default;
+    OrderFactory orders = new();
+    string customer = string.Empty;
+    string address = string.Empty;
+    string error = string.Empty;
+    string product = string.Empty;
+    int quantity = default;
+    double price = default;
+    double vat = default;
+
+    void CurrentOrder(Order? order) => currentOrder = order;
+
+    void AddOrder()
+    {
+        try
+        {
+            error = string.Empty;
+            //if (customer == string.Empty || address == string.Empty) return;
+            orders.Add(customer, address);
+            CurrentOrder(orders.Latest());
+
+            customer = string.Empty;
+            address = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+
+    void AddLineItem()
+    {
+        try
+        {   
+            error = string.Empty;
+
+            currentOrder?.AddLineItem(product, quantity, price, vat);
+
+            product = string.Empty;
+            quantity = default;
+            price = default;
+            vat = default;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+}
