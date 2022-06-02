@@ -21,6 +21,32 @@ namespace VideoShop.Common;
         SeedData();
     }
 
+    public Film AddFilm(string title, int year, int genreId)
+    {
+        try
+        {
+            if (title == default || title.Length.Equals(0))
+                throw new ArgumentException("A film must have a title.");
+            if (year < 1800)
+                throw new ArgumentException("Invalid year.");
+
+            var genre = Genres.SingleOrDefault(g => g.Id.Equals(genreId));
+
+            if (genre == default)
+                throw new ArgumentException("Invalid genre.");
+
+            var film = new Film(Films.Count + 1, title, year, genre);
+
+            _films.Add(film);
+
+            return Films.Single(f => f.Id.Equals(film.Id));
+        }
+        catch
+        {
+            throw;
+        }
+    }
+
     private void SeedData()
     {
         _genres.AddGenre("Action")
@@ -62,7 +88,7 @@ namespace VideoShop.Common;
     }
     public List<Genre> GetGenresInFilms()
     {
-        List<Genre> genres = new List<Genre>();
+        List<Genre> genres = new();
 
         try
         {
@@ -89,31 +115,6 @@ namespace VideoShop.Common;
         {
             var genre = Genres.Single(g => g.Id.Equals(genreId));
             return Films.Count(f => f.Genres.Contains(genre));
-        }
-        catch
-        {
-            throw;
-        }
-    }
-    public Film AddFilm(string title, int year, int genreId)
-    {
-        try
-        {
-            if (title == default || title.Length.Equals(0))
-                throw new ArgumentException("A film must have a title.");
-            if (year < 1800)
-                throw new ArgumentException("Invalid year.");
-
-            var genre = Genres.SingleOrDefault(g => g.Id.Equals(genreId));
-
-            if (genre == default)
-                throw new ArgumentException("Invalid genre.");
-
-            var film = new Film(Films.Count + 1, title, year, genre);
-
-            _films.Add(film);
-
-            return Films.Single(f => f.Id.Equals(film.Id));
         }
         catch
         {
