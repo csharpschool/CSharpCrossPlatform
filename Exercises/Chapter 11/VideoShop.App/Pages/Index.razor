@@ -5,6 +5,163 @@
 
 <h1>Films and Genres</h1>
 
+<div class="container-width">
+    @if (error != string.Empty)
+    {
+        <div class="mb-4 alert alert-danger">
+            <strong>Error</strong> @error
+        </div>
+    }
+
+    <div class="input-group mb-4">
+        <input @bind="@newGenre" class="form-control" placeholder="Genre" />
+        <button class="btn btn-outline-primary" @onclick="AddGenre">Add</button>
+        <button class="btn btn-outline-primary" @onclick="GenresInFilms">In Films</button>
+        <button class="btn btn-outline-primary" @onclick="AllGenres">All</button>
+    </div>
+
+    <ul class="list-group mb-4">
+        @foreach (var genre in genres)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                @genre.Name
+                <span class="badge bg-secondary">@shop.FilmsInGenre(genre.Id)</span>
+            </li>
+        }
+    </ul>
+
+    <div class="input-group mb-4">
+        <input @bind="@skipFilms" class="form-control" placeholder="Skip" />
+        <input @bind="@takeFilms" class="form-control" placeholder="Take" />
+        <input @bind="@filter" class="form-control" placeholder="Filter" />
+        <button class="btn btn-outline-primary" @onclick="FilterFilms">Filter</button>
+        <button class="btn btn-outline-primary" @onclick="UnionFilms">Union</button>
+    </div>
+
+    <div class="input-group mb-4">
+        <input @bind="@newFilm" class="form-control" placeholder="Film Title" />
+        <input @bind="@newYear" class="form-control" placeholder="Released Year" />
+        <select class="form-select" @bind="@selectedGenre">
+            @foreach (var genre in genres)
+            {
+                <option value=@genre.Id>@genre.Name</option>
+            }
+        </select>
+        <button class="btn btn-outline-primary" @onclick="AddFilm">Add</button>
+    </div>
+
+    <ul class="list-group mb-4">
+        @foreach (var film in films)
+        {
+            <li class="list-group-item">
+                <div><strong>@film.Title</strong></div>
+                @foreach (var filmGenre in film.Genres.OrderBy(g => g.Name))
+                {
+                    <small class="badge bg-secondary me-1">@filmGenre.Name</small>
+                }
+            </li>
+        }
+    </ul>
+</div>
+
 @code{
+    // Code Omitted for brevity.
+    Shop shop = new Shop(SortOrder.Ascending);
+    List<Genre> genres = new();
+    List<Film> films = new();
+    string error = string.Empty;
+    string newGenre = string.Empty;
+    bool showAllGenres = true;
+    string filter = string.Empty;
+    string skipFilms = string.Empty;
+    string takeFilms = string.Empty;
+    string newFilm = string.Empty;
+    string newYear = string.Empty;
+    int selectedGenre;
     
+    protected override void OnInitialized()
+    {
+        films = shop.Films;
+        AllGenres();
+    }
+
+    void AddGenre()
+    {
+        try
+        {
+            error = string.Empty;
+            shop.AddGenre(newGenre);
+            if (showAllGenres) AllGenres();
+            else GenresInFilms();
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+    void GenresInFilms()
+    {
+        error = string.Empty;
+        genres = shop.GetGenresInFilms();
+        showAllGenres = false;
+    }
+
+    void AllGenres()
+    {
+        error = string.Empty;
+        genres = shop.Genres;
+        showAllGenres = true;
+    }
+
+    void FilterFilms()
+    {
+        try
+        {
+            error = string.Empty;
+            var successSkip = int.TryParse(skipFilms, out int skip);
+            var successTake = int.TryParse(takeFilms, out int take);
+
+            if (successSkip || successTake)
+                films = shop.FilterFilms(filter, skip, take);
+            else
+                films = shop.FilterFilms(filter);
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+
+    void UnionFilms()
+    {
+        try
+        {
+            error = string.Empty;
+            films = shop.UnionFilms();
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
+
+    void AddFilm()
+    {
+        try
+        {
+            error = string.Empty;
+            var year = int.Parse(newYear);
+
+            shop.AddFilm(newFilm, year, selectedGenre);
+
+            films = shop.Films;
+            newFilm = string.Empty;
+            newYear = string.Empty;
+            selectedGenre = default;
+        }
+        catch (Exception ex)
+        {
+            error = ex.Message;
+        }
+    }
 }
