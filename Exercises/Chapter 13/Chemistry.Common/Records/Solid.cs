@@ -9,5 +9,5 @@ public record Solid : Substance
     public override string GetCompression() => $"{Name} ({State}): not easily compressible.";
     public override string GetShape() => $"{Name} ({State}): retains a fixed volume and shape.";
     public override string ParticleMovement() => $"{Name} ({State}): rigid - particles cannot move/slide past one another.";
-    public override sealed string GetData() => $"{Name} {Mass} This is a solid";
+    public override sealed string GetData() => $"{Name} {Mass} This is a solid.";
 }
