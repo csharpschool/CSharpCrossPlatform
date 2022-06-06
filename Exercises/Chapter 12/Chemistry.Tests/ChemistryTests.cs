@@ -1,6 +1,6 @@
 namespace Chemistry.Tests;
 
-public class SubstancesTests
+public class ChemistryTests
 {
     [Fact]
     public void CanCreateLiquidInstance()
@@ -16,11 +16,11 @@ public class SubstancesTests
     [Fact]
     public void CanCreatePlasmaInstance()
     {
-        ISubstance substance = new Plasma("Lightning", 1);
+        ISubstance substance = new Plasma("Lightning", 0.01);
 
         Assert.NotNull(substance);
         Assert.Equal("Lightning", substance.Name);
-        Assert.Equal(1, substance.Mass);
+        Assert.Equal(0.01, substance.Mass);
         Assert.Equal(States.Plasma, substance.State);
     }
 
@@ -47,12 +47,12 @@ public class SubstancesTests
     }
 
     [Fact]
-    public void CanCreateSubstancesInstance()
+    public void CanCreateChemistryInstance()
     {
         var substances = new Common.Chemistry();
 
         Assert.NotNull(substances);
-        Assert.NotEmpty(substances.SateNames);
+        Assert.NotEmpty(substances.StateNames);
         Assert.Equal(States.Liquid, substances.GetStateValue("Liquid"));
         Assert.NotEmpty(substances.Get());
         Assert.NotEmpty(substances.Get(m => m.State.Equals(States.Liquid)));

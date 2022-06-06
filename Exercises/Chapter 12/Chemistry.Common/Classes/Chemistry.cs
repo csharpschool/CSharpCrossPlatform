@@ -3,7 +3,7 @@ namespace Chemistry.Common;
 public class Chemistry
 {
     List<ISubstance> Substances { get; } = new();
-    public string[] SateNames => Enum.GetNames(typeof(States));
+    public string[] StateNames => Enum.GetNames(typeof(States));
     public States GetStateValue(string name) => (States)Enum.Parse(typeof(States), name);
 
     public Chemistry()
@@ -14,7 +14,7 @@ public class Chemistry
         Add(new Liquid("Water", 1.0));
     }
 
-    public ISubstance CreateSubstance(string name, int mass, string state) =>
+    public ISubstance CreateSubstance(string name, double mass, string state) =>
     GetStateValue(state) switch
     {
         States.Liquid => new Liquid(name, mass),
@@ -25,7 +25,7 @@ public class Chemistry
                             "State does not exist.", nameof(state)),
     };
 
-    public void Add(string name, int mass, string state)
+    public void Add(string name, double mass, string state)
     {
         try
         {

@@ -8,7 +8,7 @@ public record Solid : ISubstance
 
     public Solid(string name, double mass) => (Name, Mass) = (name, mass);
 
-    public string GetCompression() => $"{Name} ({State}): not easily compressible.";
+    public string GetCompression() => $"{Name} ({State}): does’t compress easily.";
     public string GetShape() => $"{Name} ({State}): retains a fixed volume and shape.";
     public string ParticleMovement() => $"{Name} ({State}): rigid - particles cannot move/slide past one another.";
 }

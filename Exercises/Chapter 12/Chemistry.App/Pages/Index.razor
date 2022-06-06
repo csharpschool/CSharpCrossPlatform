@@ -4,40 +4,41 @@
 <PageTitle>Substances</PageTitle>
 
 <h1>Substances</h1>
+
 <div class="container-width">
     @if (error != string.Empty)
     {
-        <div class="alert alert-danger" role="alert">
+        <div class="alert alert-danger">
             <strong>Error</strong> @error
         </div>
     }
 
-    <div class="input-group mb-3">
+    <div class="input-group mb-4">
         <input class="form-control" @bind="@newName" placeholder="Substance" />
         <input class="form-control" @bind="@newMass" placeholder="Mass" />
         <select class="form-select" @bind="@state">
-            @foreach (var state in chemistry.SateNames)
+            @foreach (var state in chemistry.StateNames)
             {
                 <option value=@state>@state</option>
             }
         </select>
-        <button class="btn btn-primary btn-padding" @onclick="AddSubstance">Add</button>
+        <button class="btn btn-outline-primary" @onclick="AddSubstance">Add</button>
     </div>
 
-    <div class="btn-group w-100" role="group">
-        <button class="btn btn-primary" @onclick="@(e => Get(States.Solid))">Solid</button>
-        <button class="btn btn-primary" @onclick="@(e => Get(States.Liquid))">Liquid</button>
-        <button class="btn btn-primary" @onclick="@(e => Get(States.Gas))">Gas</button>
-        <button class="btn btn-primary" @onclick="@(e => Get(States.Plasma))">Plasma</button>
-        <button class="btn btn-primary" @onclick="GetAll">All</button>
+    <div class="btn-group w-100">
+        <button class="btn btn-outline-primary" @onclick="@(e => Get(States.Solid))">Solid</button>
+        <button class="btn btn-outline-primary" @onclick="@(e => Get(States.Liquid))">Liquid</button>
+        <button class="btn btn-outline-primary" @onclick="@(e => Get(States.Gas))">Gas</button>
+        <button class="btn btn-outline-primary" @onclick="@(e => Get(States.Plasma))">Plasma</button>
+        <button class="btn btn-outline-primary" @onclick="GetAll">All</button>
     </div>
 
-    <ul class="list-group ">
+    <ul class="list-group">
         @foreach (var substance in substances)
         {
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                <strong>@substance.Name (@substance.Mass)</strong>
-                @* Badge using Bootstrap ver. 5.1 *@
+                @substance.Name (@substance.Mass)
+                
                 <span class="badge bg-secondary">@substance.State</span>
             </li>
         }
@@ -45,11 +46,11 @@
 </div>
 
 @code {
-    Chemistry chemistry = new Chemistry();
+    Chemistry chemistry = new();
     List<ISubstance> substances = new();
+    string error = string.Empty;
     string newName = string.Empty;
     string newMass = string.Empty;
-    string error = string.Empty;
     string state = string.Empty;
 
     protected override void OnInitialized() => GetAll();
@@ -59,7 +60,7 @@
         try
         {
             error = string.Empty;
-            var mass = int.Parse(newMass);
+            var mass = double.Parse(newMass);
             chemistry.Add(newName, mass, state);
 
             newName = string.Empty;
@@ -68,7 +69,7 @@
         }
         catch
         {
-            error = $"Could not add the substance.";
+            error = "Couldn't add the substance.";
         }
     }
 
@@ -82,6 +83,5 @@
     {
         error = string.Empty;
         substances = chemistry.Get(s => s.State.Equals(state));
-    }
-
+    } 
 }
