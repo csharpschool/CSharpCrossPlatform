@@ -1,0 +1,156 @@
+﻿@page "/"
+@using Chemistry.Common;
+
+<PageTitle>Substances</PageTitle>
+
+<h1>Substances</h1>
+<div class="container-width">
+    @if (error != string.Empty)
+    {
+        <div class="alert alert-danger" role="alert">
+            <strong>Error</strong> @error
+        </div>
+    }
+
+    <div class="input-group mb-3">
+        <input class="form-control" @bind="@newName" placeholder="Substance" />
+        <input class="form-control" @bind="@newMass" placeholder="Mass" />
+        <select class="form-select" @bind="@state">
+            @foreach (var state in chemistry.SateNames)
+            {
+                <option value=@state>@state</option>
+            }
+        </select>
+        <button class="btn btn-primary btn-padding" @onclick="AddSubstance">Add</button>
+    </div>
+
+    <div class="btn-group w-100" role="group">
+        <button class="btn btn-primary" @onclick="@(e => Get(States.Solid))">Solid</button>
+        <button class="btn btn-primary" @onclick="@(e => Get(States.Liquid))">Liquid</button>
+        <button class="btn btn-primary" @onclick="@(e => Get(States.Gas))">Gas</button>
+        <button class="btn btn-primary" @onclick="@(e => Get(States.Plasma))">Plasma</button>
+        <button class="btn btn-primary" @onclick="GetAll">All</button>
+    </div>
+
+    <ul class="list-group mb-3">
+        @foreach (var substance in substances)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <button class="btn btn-sm btn-success" @onclick="@(e => Add(substance.Id))">=</button>
+                    &nbsp;@substance.Name (@substance.Mass)
+                </div>
+                @* Badge using Bootstrap ver. 5.1 *@
+                <span class="badge bg-secondary">@substance.State</span>
+            </li>
+        }
+    </ul>
+
+    <ul class="list-group mb-3">
+        @if(stateMessage != string.Empty )
+        {
+            <li class="list-group-item bg-light">@stateMessage</li>
+        }
+        @foreach (var substance in selected)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <button class="btn btn-sm btn-danger" @onclick="@(e => Remove(substance.Id))">=</button>
+                    &nbsp;@substance.Name (@substance.Mass)
+                </div>
+                <span class="badge bg-secondary">@substance.State</span>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    Chemistry chemistry = new Chemistry();
+    List<Substance> substances = new();
+    string newName = string.Empty;
+    string newMass = string.Empty;
+    string error = string.Empty;
+    string state = string.Empty;
+    List<Substance> selected = new();
+    string stateMessage = string.Empty;
+
+    protected override void OnInitialized() => GetAll();
+    
+    void AddSubstance()
+    {
+        try
+        {
+            error = string.Empty;
+            var mass = int.Parse(newMass);
+            chemistry.Add(newName, mass, state);
+
+            newName = string.Empty;
+            newMass = string.Empty;
+            state = string.Empty;
+        }
+        catch
+        {
+            error = $"Could not add the substance.";
+        }
+    }
+
+    void GetAll()
+    {
+        error = string.Empty;
+        substances = chemistry.Get();
+    }
+
+    void Get(States state)
+    {
+        error = string.Empty;
+        substances = chemistry.Get(s => s.State.Equals(state));
+    }
+
+    void Add(int id)
+    {
+        var substance = selected.SingleOrDefault(s => s.Id.Equals(id));
+        
+        if(substance is null)
+            selected.Add(substances.Single(s => s.Id.Equals(id)));
+
+        Compare();
+    }
+
+    void Remove(int id)
+    {
+        var substance = selected.Single(s => s.Id.Equals(id));
+        selected.Remove(substance);
+        
+        Compare();
+    }
+
+    void Compare()
+    {
+        try
+        {
+            if(selected.Count == 1) throw new ArgumentException("Too few substances selected for a comparison.");
+            if(selected.Count == 0) throw new ArgumentException("");
+
+            var first = selected.First();
+
+            foreach(var substance in selected.Skip(1))
+            {
+                if(!first.SameState(substance)) 
+                {
+                    stateMessage = "Substances have different states.";
+                    return;
+                }
+            }
+
+            stateMessage = "Substances have the same state.";
+        }
+        catch(ArgumentException ex)
+        {
+            stateMessage = ex.Message;
+        }
+        catch
+        {
+            stateMessage = "Couldn't compare the substances.";
+        }
+    }    
+}
