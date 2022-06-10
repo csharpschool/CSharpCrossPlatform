@@ -1,19 +1,20 @@
 namespace BlackJack.Classes;
 
-abstract class PlayerBase
+public abstract class PlayerBase
 {
     public bool Stays { get; set; }
     public int Score { get; set; }
     public List<Card> Cards { get; private set; } = new();
     public Results Result { get; private set; } = Results.Unknown;
 
-    protected void ChangeResult(Results result) => Result = result;
+    public void ChangeResult(Results result) => Result = result;
     
     public virtual void AddCard(List<Card> cards)
     {
         Cards.AddRange(cards);
         CalculateScore();
-        if (Score > 21) Result = Results.DealerLost;
+        //if (Score > 21) Result = Results.DealerLost;
+        RuleEngine.StayAndBustHandRules.Evaluate(this);
     }
     
     public void CalculateScore()

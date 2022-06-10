@@ -1,9 +1,8 @@
 namespace BlackJack.Enums;
 
-enum Results
+public enum Results
 {
     Unknown,
     BlackJack,
-    PlayerLost,
-    DealerLost
+    Bust
 }

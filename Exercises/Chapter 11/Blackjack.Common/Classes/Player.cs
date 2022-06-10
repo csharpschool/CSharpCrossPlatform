@@ -6,7 +6,6 @@ class Player
 {
     Blackjack Game { get; set; }
     public bool Stays { get; set; }
-    //public Card[] Cards { get; private set; } = new Card[0];
     public List<Card> Cards { get; private set; } = new();
     public int Score { get; set; }
     public PlayerTypes PlayerType { get; init; }
@@ -14,7 +13,6 @@ class Player
 
     public Player(PlayerTypes playerType, Blackjack game) => (PlayerType, Game) = (playerType, game);
 
-    //void CalculateScore()
     public void CalculateScore()
     {
         Score = Cards.Sum(c => c.Value);
@@ -26,10 +24,8 @@ class Player
             if (Score <= 11) Score += 10;
     }
 
-    //public void AddCard(Card[] cards)
     public void AddCard(List<Card> cards)
     {
-        //Cards = Cards.Concat(cards).ToArray();
         Cards.AddRange(cards);
 
         if(PlayerType.Equals(PlayerTypes.Player))

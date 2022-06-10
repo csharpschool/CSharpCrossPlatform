@@ -8,8 +8,6 @@ public class Blackjack
    Player player;
    Player dealer;
 
-   //public Card[] GetPlayerCards() => player.Cards;
-   //public Card[] GetDealerCards() => dealer.Cards;
    public List<Card> GetDealerCards() => dealer.Cards;
    public List<Card> GetPlayerCards() => player.Cards;
    public int GetPlayerScore() => player.Score;
@@ -45,10 +43,6 @@ public class Blackjack
     {
         player.Stays = true;
         dealer.Stays = true;
-        //dealer.Cards[0].IsHidden = false;
-        //if(!player.Result.Equals(Results.BlackJack) && !player.Result.Equals(Results.PlayerLost))
-        //    while(dealer.Score < 17)
-        //        DealDealerCard();
         if(!player.Result.Equals(Results.BlackJack) && !player.Result.Equals(Results.PlayerLost))
         {
             dealer.Cards.First().IsHidden = false;
