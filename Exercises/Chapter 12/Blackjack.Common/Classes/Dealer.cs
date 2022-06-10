@@ -10,15 +10,13 @@ class Dealer : IPlayer
     public void AddCard(Card[] cards)
     {
         Cards = Cards.Concat(cards).ToArray();
-
-        if (!Stays) cards[0].IsHidden = true;
         CalculateScore();
         if (Score > 21) Result = Results.DealerLost;
     }
     
     public void CalculateScore()
     {
-        Score = Cards.Where(c => !c.IsHidden).Sum(c => c.Value);
+        Score = Cards.Sum(c => c.Value);
         var aces = Cards.Where(c => c.Value.Equals(1) && !c.IsHidden); // Fetch all aces
 
         // The score is low enough to add the ace with its high value of 11.

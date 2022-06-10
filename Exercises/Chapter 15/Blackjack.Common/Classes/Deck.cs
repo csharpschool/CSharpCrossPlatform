@@ -1,3 +1,4 @@
+using BlackJack.Records;
 namespace BlackJack.Classes;
 
 class Deck

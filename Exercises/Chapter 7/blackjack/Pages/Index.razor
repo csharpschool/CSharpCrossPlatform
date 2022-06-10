@@ -40,5 +40,5 @@
 {
     Blackjack game = new();
 
-    protected override async Task OnInitializedAsync() => game.NewGame();
+    protected override void OnInitialized() => game.NewGame();
 }

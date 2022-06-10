@@ -13,8 +13,6 @@ abstract class PlayerBase
     public virtual void AddCard(Card[] cards)
     {
         ConcatCards(cards);
-
-        if (!Stays) cards[0].IsHidden = true;
         CalculateScore();
         if (Score > 21) Result = Results.DealerLost;
     }

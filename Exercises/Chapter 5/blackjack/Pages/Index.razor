@@ -53,7 +53,7 @@
     }
     Results result = Results.Unknown;
     
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         var cards = new Card[numberOfCards];
         var index = 0;

@@ -158,7 +158,7 @@
 
     void CalculateScore(Card[] cards, out int score)
     {
-        score = cards.Where(c => !c.IsHidden).Sum(c => c.Value);
+        score = cards.Sum(c => c.Value);
         var aces = cards.Where(c => c.Value.Equals(1) && !c.IsHidden); // Fetch all aces
 
         // The score is low enough to add the ace with its high value of 11.
@@ -189,6 +189,6 @@
         else winner = "Draw";
     }
 
-    protected override async Task OnInitializedAsync() => NewGame();
+    protected override void OnInitialized() => NewGame();
     
 }

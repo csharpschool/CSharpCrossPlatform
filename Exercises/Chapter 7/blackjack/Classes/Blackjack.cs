@@ -22,7 +22,12 @@ public class Blackjack
     }
 
     public void DealPlayerCard(int takeCards = 1) => player.AddCard(deck.DealCard(takeCards));
-    public void DealDealerCard(int takeCards = 1) => dealer.AddCard(deck.DealCard(takeCards));
+    public void DealDealerCard(int takeCards = 1, bool firstCards = false) 
+    {
+        var cards = deck.DealCard(takeCards);
+        if(firstCards) cards[0].IsHidden = true;
+        dealer.AddCard(cards);
+    }
 
     public void NewGame()
     {
@@ -31,7 +36,7 @@ public class Blackjack
         player = new(PlayerTypes.Player, this);
         dealer = new(PlayerTypes.Dealer, this);
 
-        DealDealerCard(2);
+        DealDealerCard(2, true);
         DealPlayerCard(2);
     }
 

@@ -6,6 +6,8 @@ public class Blackjack
    Player player;
    Dealer dealer;
 
+   // Code omitted for brevity
+
    public Card[] GetPlayerCards() => player.Cards;
    public int GetPlayerScore() => player.Score;
    public Card[] GetDealerCards() => dealer.Cards;
@@ -15,21 +17,25 @@ public class Blackjack
 
     public Blackjack()
     {
-        player = new(Stay);
+        player = new(this);
         dealer = new();
     }
 
     public void DealPlayerCard(int takeCards = 1) => player.AddCard(deck.DealCard(takeCards));
-    public void DealDealerCard(int takeCards = 1) => dealer.AddCard(deck.DealCard(takeCards));
-
+    public void DealDealerCard(int takeCards = 1, bool firstCards = false) 
+    {
+        var cards = deck.DealCard(takeCards);
+        if(firstCards) cards[0].IsHidden = true;
+        dealer.AddCard(cards);
+    }
     public void NewGame()
     {
         Winner = string.Empty;
         deck.NewDeck();
-        player = new(Stay);
+        player = new(this);
         dealer = new();
 
-        DealDealerCard(2);
+        DealDealerCard(2, true);
         DealPlayerCard(2);
     }
 
