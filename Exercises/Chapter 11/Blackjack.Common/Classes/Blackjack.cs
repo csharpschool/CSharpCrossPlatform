@@ -1,11 +1,15 @@
+using BlackJack.Records;
+using BlackJack.Enums;
 namespace BlackJack.Classes;
 
 public class Blackjack
 {
    Deck deck = new();
    Player player;
-   Dealer dealer;
+   Player dealer;
 
+   //public Card[] GetPlayerCards() => player.Cards;
+   //public Card[] GetDealerCards() => dealer.Cards;
    public List<Card> GetDealerCards() => dealer.Cards;
    public List<Card> GetPlayerCards() => player.Cards;
    public int GetPlayerScore() => player.Score;
@@ -15,8 +19,8 @@ public class Blackjack
 
     public Blackjack()
     {
-        player = new(this);
-        dealer = new();
+        player = new(PlayerTypes.Player, this);
+        dealer = new(PlayerTypes.Dealer, this);
     }
 
     public void DealPlayerCard(int takeCards = 1) => player.AddCard(deck.DealCard(takeCards));
@@ -30,8 +34,8 @@ public class Blackjack
     {
         Winner = string.Empty;
         deck.NewDeck();
-        player = new(this);
-        dealer = new();
+        player = new(PlayerTypes.Player, this);
+        dealer = new(PlayerTypes.Dealer, this);
 
         DealDealerCard(2, true);
         DealPlayerCard(2);
@@ -41,7 +45,10 @@ public class Blackjack
     {
         player.Stays = true;
         dealer.Stays = true;
-
+        //dealer.Cards[0].IsHidden = false;
+        //if(!player.Result.Equals(Results.BlackJack) && !player.Result.Equals(Results.PlayerLost))
+        //    while(dealer.Score < 17)
+        //        DealDealerCard();
         if(!player.Result.Equals(Results.BlackJack) && !player.Result.Equals(Results.PlayerLost))
         {
             dealer.Cards.First().IsHidden = false;

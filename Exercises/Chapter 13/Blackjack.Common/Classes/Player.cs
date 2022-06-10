@@ -6,11 +6,11 @@ class Player : PlayerBase
       
     public Player(Blackjack game) => Game = game;
 
-    public override void AddCard(Card[] cards)
+    public override void AddCard(List<Card> cards)
     {
-        ConcatCards(cards);
-
+        Cards.AddRange(cards);
         CalculateScore();
+
         if(Score == 21 && cards.Count().Equals(2))
         {
             ChangeResult(Results.BlackJack);

@@ -4,12 +4,12 @@ class Dealer : IPlayer
 {
     public bool Stays { get; set; }
     public int Score { get; set; }
-    public Card[] Cards { get; private set; } = new Card[0];
+    public List<Card> Cards { get; private set; } = new();
     public Results Result { get; private set; } = Results.Unknown;
 
-    public void AddCard(Card[] cards)
+    public void AddCard(List<Card> cards)
     {
-        Cards = Cards.Concat(cards).ToArray();
+        Cards.AddRange(cards);
         CalculateScore();
         if (Score > 21) Result = Results.DealerLost;
     }

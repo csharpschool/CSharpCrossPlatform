@@ -4,15 +4,14 @@ abstract class PlayerBase
 {
     public bool Stays { get; set; }
     public int Score { get; set; }
-    public Card[] Cards { get; private set; } = new Card[0];
+    public List<Card> Cards { get; private set; } = new();
     public Results Result { get; private set; } = Results.Unknown;
 
     protected void ChangeResult(Results result) => Result = result;
-    protected private void ConcatCards(Card[] cards) => Cards = Cards.Concat(cards).ToArray();
-
-    public virtual void AddCard(Card[] cards)
+    
+    public virtual void AddCard(List<Card> cards)
     {
-        ConcatCards(cards);
+        Cards.AddRange(cards);
         CalculateScore();
         if (Score > 21) Result = Results.DealerLost;
     }

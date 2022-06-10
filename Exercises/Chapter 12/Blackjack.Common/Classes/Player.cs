@@ -5,14 +5,14 @@ class Player : IPlayer
     Blackjack Game { get; set; }
     public bool Stays { get; set; }
     public int Score { get; set; }
-    public Card[] Cards { get; private set; } = new Card[0];
+    public List<Card> Cards { get; private set; } = new();
     public Results Result { get; private set; } = Results.Unknown;
     
     public Player(Blackjack game) => Game = game;
 
-    public void AddCard(Card[] cards)
+    public void AddCard(List<Card> cards)
     {
-        Cards = Cards.Concat(cards).ToArray();
+        Cards.AddRange(cards);
 
         CalculateScore();
         if(Score == 21 && cards.Count().Equals(2))

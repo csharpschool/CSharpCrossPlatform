@@ -6,11 +6,9 @@ public class Blackjack
    Player player;
    Dealer dealer;
 
-   // Code omitted for brevity
-
-   public Card[] GetPlayerCards() => player.Cards;
+   public List<Card> GetDealerCards() => dealer.Cards;
+   public List<Card> GetPlayerCards() => player.Cards;
    public int GetPlayerScore() => player.Score;
-   public Card[] GetDealerCards() => dealer.Cards;
    public int GetDealerScore() => dealer.Score;
    public bool Stays { get => player.Stays; }
    public string Winner { get; private set; } = string.Empty;
@@ -25,7 +23,7 @@ public class Blackjack
     public void DealDealerCard(int takeCards = 1, bool firstCards = false) 
     {
         var cards = deck.DealCard(takeCards);
-        if(firstCards) cards[0].IsHidden = true;
+        if(firstCards) cards.First().IsHidden = true;
         dealer.AddCard(cards);
     }
     public void NewGame()
@@ -43,10 +41,14 @@ public class Blackjack
     {
         player.Stays = true;
         dealer.Stays = true;
-        dealer.Cards[0].IsHidden = false;
-        if(!player.Result.Equals(Results.BlackJack) && !player.Result.Equals(Results.PlayerLost)) 
+
+        if(!player.Result.Equals(Results.BlackJack) && !player.Result.Equals(Results.PlayerLost))
+        {
+            dealer.Cards.First().IsHidden = false;
+            dealer.CalculateScore();
             while(dealer.Score < 17)
                 DealDealerCard();
+        }
 
         DetermineWinner();
     }
@@ -55,7 +57,7 @@ public class Blackjack
     {
         if(player.Result.Equals(Results.BlackJack) || player.Result.Equals(Results.PlayerLost))
         {
-            dealer.Cards[0].IsHidden = true;
+            dealer.Cards.First().IsHidden = true;
             dealer.Score = dealer.Cards[1].Value;
         }
 
