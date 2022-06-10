@@ -27,6 +27,6 @@ public class CardTests
         // Assert
         Assert.NotNull(card);
         Assert.Equal("🂠", card.Symbol);
-        Assert.Equal(1, card.Value);
+        Assert.Equal(0, card.Value);
     }
 }

@@ -24,7 +24,6 @@ public class BlackjackTests
         Assert.False(game.Stays);
         Assert.Equal("", game.Winner);
     }
-    
     [Fact]
     public void CanStartNewGame()
     {
@@ -35,17 +34,11 @@ public class BlackjackTests
         game.NewGame();
         var dealerCards = game.GetDealerCards();
         var playerCards = game.GetPlayerCards();
-        var dealerScore = game.GetDealerScore();
-        var playerScore = game.GetPlayerScore();
 
         // Assert
         Assert.NotNull(game);
         Assert.Equal(2, dealerCards.Length);
         Assert.Equal(2, playerCards.Length);
-        Assert.NotEqual(0, dealerScore);
-        Assert.NotEqual(0, playerScore);
-        Assert.False(game.Stays);
-        Assert.Equal("", game.Winner);
     }
 
     [Fact]
@@ -56,17 +49,16 @@ public class BlackjackTests
 
         // Act
         game.NewGame();
-        var playerScore = game.GetPlayerScore();
+        // Can't draw anohter card with Blackjack
+        while(game.GetPlayerScore().Equals(21))
+            game.NewGame();
+
         game.DealPlayerCard();
         var playerCards = game.GetPlayerCards();
-        var newPlayerScore = game.GetPlayerScore();
-        var card3Value = playerCards.Last().Value;
 
         // Assert
         Assert.NotNull(game);
         Assert.Equal(3, playerCards.Length);
-        Assert.Equal(newPlayerScore, playerScore + card3Value);
-        Assert.Equal("", game.Winner);
     }
 
     [Fact]
