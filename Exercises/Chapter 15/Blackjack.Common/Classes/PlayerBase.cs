@@ -13,7 +13,6 @@ public abstract class PlayerBase
     {
         Cards.AddRange(cards);
         CalculateScore();
-        //if (Score > 21) Result = Results.DealerLost;
         RuleEngine.StayAndBustHandRules.Evaluate(this);
     }
     

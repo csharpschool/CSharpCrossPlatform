@@ -42,7 +42,6 @@ public class Blackjack
         player.Stays = true;
         dealer.Stays = true;
 
-        //if(!player.Result.Equals(Results.BlackJack) && !player.Result.Equals(Results.PlayerLost))
         if(!RuleEngine.BlackjackAndBustHandRules.Evaluate(player))
         {
             dealer.Cards.First().IsHidden = false;
@@ -51,25 +50,6 @@ public class Blackjack
                 DealDealerCard();
         }
 
-        DetermineWinner();
-    }
-
-    void DetermineWinner()
-    {
-        //if(player.Result.Equals(Results.BlackJack) || player.Result.Equals(Results.PlayerLost))
-        if(RuleEngine.BlackjackAndBustHandRules.Evaluate(player))
-        {
-            dealer.Cards.First().IsHidden = true;
-            dealer.Score = dealer.Cards[1].Value;
-        }
-
-        if (player.Result.Equals(Results.BlackJack)) Winner = "Player wins with Blackjack";
-        //else if(player.Result.Equals(Results.PlayerLost)) Winner = "Dealer wins";
-        //else if(dealer.Result.Equals(Results.DealerLost)) Winner = "Player wins";
-        else if(player.Result.Equals(Results.Bust)) Winner = "Dealer wins";
-        else if(dealer.Result.Equals(Results.Bust)) Winner = "Player wins";
-        else if(player.Score > dealer.Score) Winner = "Player wins";
-        else if(player.Score < dealer.Score) Winner = "Dealer wins";
-        else Winner = "Draw";
+        Winner = RuleEngine.DetermineWinnerRules.Evaluate(player, dealer);
     }
 }

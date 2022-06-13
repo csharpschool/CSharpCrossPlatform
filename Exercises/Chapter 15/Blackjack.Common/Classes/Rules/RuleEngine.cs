@@ -14,6 +14,14 @@ public static class RuleEngine
         new BustRule()
     };
 
+    public static List<IOutcomeRule> DetermineWinnerRules => new()
+    {
+        new BlackjackRule(),
+        new PlayerBustRule(),
+        new DealerBustRule(),
+        new ScoreRule()
+    };
+
     public static bool Evaluate(this IEnumerable<IHandRule> rules, PlayerBase person)
     {
         person.ChangeResult(Results.Unknown);
@@ -24,5 +32,16 @@ public static class RuleEngine
         }
 
         return !person.Result.Equals(Results.Unknown);
+    }
+
+    public static string Evaluate(this IEnumerable<IOutcomeRule> rules, Player player, Dealer dealer)
+    {
+        foreach(var rule in rules)
+        {
+            var result = rule.Evaluate(player, dealer);
+            if(result.Satisfied) return result.Message;
+        }
+
+        return string.Empty;
     }
 }

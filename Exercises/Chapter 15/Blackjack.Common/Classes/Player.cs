@@ -11,17 +11,6 @@ public class Player : PlayerBase
         Cards.AddRange(cards);
         CalculateScore();
 
-       /*  if(Score == 21 && cards.Count().Equals(2))
-        {
-            ChangeResult(Results.BlackJack);
-            Game.Stay();
-        }
-        if (Score > 21)
-        {
-            ChangeResult(Results.PlayerLost);
-            Game.Stay();
-        } */
-
         if(RuleEngine.BlackjackAndBustHandRules.Evaluate(this)) Game.Stay();
     }
 }
