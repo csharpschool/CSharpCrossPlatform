@@ -1,5 +1,5 @@
 namespace BlackJack.Classes;
 
-public class Dealer : PlayerBase
+class Dealer : PlayerBase
 {
 }

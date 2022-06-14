@@ -37,8 +37,8 @@ public class BlackjackTests
 
         // Assert
         Assert.NotNull(game);
-        Assert.Equal(2, dealerCards.Count);
-        Assert.Equal(2, playerCards.Count);
+        Assert.Equal(2, dealerCards.Length);
+        Assert.Equal(2, playerCards.Length);
     }
 
     [Fact]
@@ -58,7 +58,7 @@ public class BlackjackTests
 
         // Assert
         Assert.NotNull(game);
-        Assert.Equal(3, playerCards.Count);
+        Assert.Equal(3, playerCards.Length);
     }
 
     [Fact]

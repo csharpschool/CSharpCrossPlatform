@@ -6,9 +6,9 @@ public class Blackjack
    Player player;
    Dealer dealer;
 
-   public List<Card> GetDealerCards() => dealer.Cards;
-   public List<Card> GetPlayerCards() => player.Cards;
+   public Card[] GetPlayerCards() => player.Cards;
    public int GetPlayerScore() => player.Score;
+   public Card[] GetDealerCards() => dealer.Cards;
    public int GetDealerScore() => dealer.Score;
    public bool Stays { get => player.Stays; }
    public string Winner { get; private set; } = string.Empty;
@@ -23,7 +23,7 @@ public class Blackjack
     public void DealDealerCard(int takeCards = 1, bool firstCards = false) 
     {
         var cards = deck.DealCard(takeCards);
-        if(firstCards) cards.First().IsHidden = true;
+        if(firstCards) cards[0].IsHidden = true;
         dealer.AddCard(cards);
     }
     public void NewGame()
@@ -41,15 +41,27 @@ public class Blackjack
     {
         player.Stays = true;
         dealer.Stays = true;
-
-        if(!RuleEngine.BlackjackAndBustHandRules.Evaluate(player))
-        {
-            dealer.Cards.First().IsHidden = false;
-            dealer.CalculateScore();
+        dealer.Cards[0].IsHidden = false;
+        if(!player.Result.Equals(Results.BlackJack) && !player.Result.Equals(Results.PlayerLost)) 
             while(dealer.Score < 17)
                 DealDealerCard();
+
+        DetermineWinner();
+    }
+
+    void DetermineWinner()
+    {
+        if(player.Result.Equals(Results.BlackJack) || player.Result.Equals(Results.PlayerLost))
+        {
+            dealer.Cards[0].IsHidden = true;
+            dealer.Score = dealer.Cards[1].Value;
         }
 
-        Winner = RuleEngine.DetermineWinnerRules.Evaluate(player, dealer);
+        if (player.Result.Equals(Results.BlackJack)) Winner = "Player wins with Blackjack";
+        else if(player.Result.Equals(Results.PlayerLost)) Winner = "Dealer wins";
+        else if(dealer.Result.Equals(Results.DealerLost)) Winner = "Player wins";
+        else if(player.Score > dealer.Score) Winner = "Player wins";
+        else if(player.Score < dealer.Score) Winner = "Dealer wins";
+        else Winner = "Draw";
     }
 }
