@@ -138,6 +138,28 @@ namespace Bookstore.Data.Migrations
                 columns: new[] { "Id", "Isbn", "PublisherId", "Title" },
                 values: new object[] { 3, "XYZ987", 3, "Title 3" });
 
+            migrationBuilder.InsertData(
+                table: "AuthorPublisher",
+                columns: new[] { "AuthorsId", "PublishersId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 2, 2 },
+                    { 2, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AuthorBook",
+                columns: new[] { "AuthorsId", "BooksId" },
+                values: new object[,]
+                {
+                    { 1, 1 },
+                    { 1, 2 },
+                    { 2, 2 },
+                    { 2, 3 }
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AuthorBook_BooksId",
                 table: "AuthorBook",
