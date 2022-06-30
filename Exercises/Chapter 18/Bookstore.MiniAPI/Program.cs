@@ -10,6 +10,8 @@ builder.Services.AddDbContext<BookstoreContext>(
         options.UseSqlServer(
             builder.Configuration.GetConnectionString("BookstoreConnection")));
 
+//ConfigureAutoMapper(builder.Services);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -21,28 +23,23 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateTime.Now.AddDays(index),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
-
 app.Run();
 
-record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
+/* void ConfigureAutoMapper(IServiceCollection services)
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+    var config = new MapperConfiguration(cfg =>
+    {
+        cfg.CreateMap<Book, BookBaseDTO>().ReverseMap();
+        cfg.CreateMap<Book, BookMiniDTO>().ReverseMap();
+        cfg.CreateMap<Book, BookDTO>().ReverseMap();
+        cfg.CreateMap<Publisher, PublisherBaseDTO>().ReverseMap();
+        cfg.CreateMap<Publisher, PublisherMiniDTO>().ReverseMap();
+        cfg.CreateMap<Publisher, PublisherDTO>().ReverseMap();
+        cfg.CreateMap<Author, AuthorBaseDTO>().ReverseMap();
+        cfg.CreateMap<Author, AuthorMiniDTO>().ReverseMap();
+        cfg.CreateMap<Author, AuthorDTO>().ReverseMap();
+    });
+    var mapper = config.CreateMapper();
+    services.AddSingleton(mapper);
+} */
+
