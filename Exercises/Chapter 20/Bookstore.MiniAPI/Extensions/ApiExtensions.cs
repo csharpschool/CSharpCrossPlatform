@@ -2,6 +2,16 @@ namespace Bookstore.MiniAPI;
 
 public static class ApiExtensions
 {
+    public static void Register<TEntity, TDto, TMiniDTO, TBaseDto>(this WebApplication app) where TEntity : class, IEntity where TDto : class where TMiniDTO : class where TBaseDto : class
+    {
+        var node = typeof(TEntity).Name.ToLower();
+        app.MapGet($"/api/{node}s", HttpGetAsync<TEntity, TDto>);
+        app.MapGet($"/api/{node}s/" + "{id}", HttpSingleAsync<TEntity, TDto>);
+        app.MapPost($"/api/{node}s", HttpPostAsync<TEntity, TBaseDto>);
+        app.MapPut($"/api/{node}s/" + "{id}", HttpPutAsync<TEntity, TBaseDto>);
+        app.MapDelete($"/api/{node}s/" + "{id}", HttpDeleteAsync<TEntity>);
+    }
+
     public static async Task<IResult> HttpGetAsync<TEntity, TDto>(this IDbService db, bool include = false) where TEntity : class where TDto : class => 
         Results.Ok(await db.GetAsync<TEntity, TDto>(include));
     public static async Task<IResult> HttpSingleAsync<TEntity, TDto>(this IDbService db, int id, bool include = false) where TEntity : class, IEntity where TDto : class

@@ -15,6 +15,8 @@ RegisterServices(builder.Services);
 
 var app = builder.Build();
 
+RegisterMiddleware(app);
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -24,7 +26,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/api/books/{id}", async Task<IResult> (IDbService db, int id, bool include) =>
+/* app.MapGet("/api/books/{id}", async Task<IResult> (IDbService db, int id, bool include) =>
     await db.HttpSingleAsync<Book, BookDTO>(id, include));
 app.MapGet("/api/books", async Task<IResult> (IDbService db, bool include) =>
     await db.HttpGetAsync<Book, BookDTO>(include));
@@ -33,7 +35,7 @@ app.MapPost("/api/books", async Task<IResult> (IDbService db, BookBaseDTO dto) =
 app.MapPut("/api/books/{id}", async Task<IResult> (IDbService db, int id, BookMiniDTO dto) =>
     await db.HttpPutAsync<Book, BookMiniDTO>(id, dto));
 app.MapDelete("/api/books/{id}", async Task<IResult> (IDbService db, int id) =>
-    await db.HttpDeleteAsync<Book>(id));
+    await db.HttpDeleteAsync<Book>(id)); */
 
 app.Run();
 
@@ -58,4 +60,18 @@ void ConfigureAutoMapper(IServiceCollection services)
 void RegisterServices(IServiceCollection services)
 {
     services.AddScoped<IDbService, DbService>();
+    services.AddTransient<IApi, BookApi>();
+    services.AddTransient<IApi, PublisherApi>();
+    services.AddTransient<IApi, AuthorApi>();
+}
+
+void RegisterMiddleware(WebApplication app)
+{
+    var apis = app.Services.GetServices<IApi>();
+    foreach (var api in apis)
+    {
+        if (api is null) throw new InvalidProgramException("Couldn't register API.");
+
+        api.Register(app);
+    }
 }
