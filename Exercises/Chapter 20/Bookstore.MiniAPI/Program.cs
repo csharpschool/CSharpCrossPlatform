@@ -11,6 +11,7 @@ builder.Services.AddDbContext<BookstoreContext>(
             builder.Configuration.GetConnectionString("BookstoreConnection")));
 
 ConfigureAutoMapper(builder.Services);
+RegisterServices(builder.Services);
 
 var app = builder.Build();
 
@@ -23,23 +24,21 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.MapGet("/api/books/{id}", async Task<IResult> (BookstoreContext db, int id) =>
+/* app.MapGet("/api/books/{id}", async Task<IResult> (BookstoreContext db, int id) =>
 {
-    var result = await db.Books.SingleAsync(e => e.Id.Equals(id));
+    var result = await db.Books.SingleOrDefaultAsync(e => e.Id.Equals(id));
     if (result is null) return Results.NotFound();
     return Results.Ok(result); 
 });
-
 app.MapGet("/api/books", async Task<IResult> (BookstoreContext db) =>
     Results.Ok(await db.Books.ToListAsync())); 
-
 app.MapPost("/api/books", async Task<IResult> (BookstoreContext db, IMapper _mapper, BookBaseDTO dto) =>
 {
      try
     {
         var book = _mapper.Map<Book>(dto);
         await db.Set<Book>().AddAsync(book);
-        if (await db.SaveChangesAsync() >= 0)
+        if (await db.SaveChangesAsync() > 0)
             return Results.Created($"/Books/{book.Id}", book);
     }
     catch (Exception ex)
@@ -67,7 +66,7 @@ app.MapPut("/api/books/{id}", async Task<IResult> (BookstoreContext db, IMapper 
 
     return Results.BadRequest($"Couldn't update the book.");
 });
-app.MapDelete("/api/books/{id}", async Task<IResult> (BookstoreContext db, IMapper _mapper, int id) =>
+app.MapDelete("/api/books/{id}", async Task<IResult> (BookstoreContext db, int id) =>
 {
      try
     {
@@ -77,7 +76,7 @@ app.MapDelete("/api/books/{id}", async Task<IResult> (BookstoreContext db, IMapp
         
         db.Remove(entity);
 
-        if (await db.SaveChangesAsync() >= 0)
+        if (await db.SaveChangesAsync() > 0)
             return Results.NoContent();
     }
     catch (Exception ex)
@@ -86,8 +85,61 @@ app.MapDelete("/api/books/{id}", async Task<IResult> (BookstoreContext db, IMapp
     }
 
     return Results.BadRequest($"Couldn't remove the book.");
-});
+}); */
 
+app.MapGet("/api/books/{id}", async Task<IResult> (IDbService db, int id) =>
+{
+    var result = await db.SingleAsync<Book, BookDTO>(e => e.Id.Equals(id));
+    if (result is null) return Results.NotFound();
+    return Results.Ok(result); 
+});
+app.MapGet("/api/books", async Task<IResult> (IDbService db) =>
+    Results.Ok(await db.GetAsync<Book, BookDTO>())); 
+app.MapPost("/api/books", async Task<IResult> (IDbService db, BookBaseDTO dto) =>
+{
+     try
+    {
+        var entity = await db.AddAsync<Book, BookBaseDTO>(dto);
+        if (await db.SaveChangesAsync())
+            return Results.Created($"/Books/{entity.Id}", entity);
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest($"Couldn't add the book.\n{ex}.");
+    }
+
+    return Results.BadRequest($"Couldn't add the book.");
+});
+app.MapPut("/api/books/{id}", async Task<IResult> (IDbService db, int id, BookMiniDTO dto) =>
+{
+     try
+    {
+        if (!await db.AnyAsync<Book>(e => e.Id.Equals(id))) return Results.NotFound();
+        
+        db.Update<Book, BookMiniDTO>(id, dto);
+        if (await db.SaveChangesAsync()) return Results.NoContent();
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest($"Couldn't update the book.\n{ex}.");
+    }
+
+    return Results.BadRequest($"Couldn't update the book.");
+});
+app.MapDelete("/api/books/{id}", async Task<IResult> (IDbService db, int id) =>
+{
+     try
+    {
+        if(!await db.DeleteAsync<Book>(id)) return Results.NotFound();
+        if (await db.SaveChangesAsync()) return Results.NoContent();
+    }
+    catch (Exception ex)
+    {
+        return Results.BadRequest($"Couldn't remove the book.\n{ex}.");
+    }
+
+    return Results.BadRequest($"Couldn't remove the book.");
+});
 
 app.Run();
 
@@ -109,3 +161,7 @@ void ConfigureAutoMapper(IServiceCollection services)
     services.AddSingleton(mapper);
 }
 
+void RegisterServices(IServiceCollection services)
+{
+    services.AddScoped<IDbService, DbService>();
+}
