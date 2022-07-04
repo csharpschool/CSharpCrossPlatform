@@ -24,122 +24,16 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-/* app.MapGet("/api/books/{id}", async Task<IResult> (BookstoreContext db, int id) =>
-{
-    var result = await db.Books.SingleOrDefaultAsync(e => e.Id.Equals(id));
-    if (result is null) return Results.NotFound();
-    return Results.Ok(result); 
-});
-app.MapGet("/api/books", async Task<IResult> (BookstoreContext db) =>
-    Results.Ok(await db.Books.ToListAsync())); 
-app.MapPost("/api/books", async Task<IResult> (BookstoreContext db, IMapper _mapper, BookBaseDTO dto) =>
-{
-     try
-    {
-        var book = _mapper.Map<Book>(dto);
-        await db.Set<Book>().AddAsync(book);
-        if (await db.SaveChangesAsync() > 0)
-            return Results.Created($"/Books/{book.Id}", book);
-    }
-    catch (Exception ex)
-    {
-        return Results.BadRequest($"Couldn't add the book.\n{ex}.");
-    }
-
-    return Results.BadRequest($"Couldn't add the book.");
-});
-app.MapPut("/api/books/{id}", async Task<IResult> (BookstoreContext db, IMapper _mapper, int id, BookMiniDTO dto) =>
-{
-     try
-    {
-        if (!await db.Set<Book>().AnyAsync(e => e.Id.Equals(id))) return Results.NotFound();
-            
-        var book = _mapper.Map<Book>(dto);
-        db.Set<Book>().Update(book);
-        if (await db.SaveChangesAsync() >= 0)
-            return Results.NoContent();
-    }
-    catch (Exception ex)
-    {
-        return Results.BadRequest($"Couldn't update the book.\n{ex}.");
-    }
-
-    return Results.BadRequest($"Couldn't update the book.");
-});
-app.MapDelete("/api/books/{id}", async Task<IResult> (BookstoreContext db, int id) =>
-{
-     try
-    {
-        var entity = await db.Set<Book>().SingleOrDefaultAsync(e => e.Id.Equals(id));
-
-        if (entity is null) return Results.NotFound();
-        
-        db.Remove(entity);
-
-        if (await db.SaveChangesAsync() > 0)
-            return Results.NoContent();
-    }
-    catch (Exception ex)
-    {
-        return Results.BadRequest($"Couldn't remove the book.\n{ex}.");
-    }
-
-    return Results.BadRequest($"Couldn't remove the book.");
-}); */
-
-app.MapGet("/api/books/{id}", async Task<IResult> (IDbService db, int id) =>
-{
-    var result = await db.SingleAsync<Book, BookDTO>(e => e.Id.Equals(id));
-    if (result is null) return Results.NotFound();
-    return Results.Ok(result); 
-});
-app.MapGet("/api/books", async Task<IResult> (IDbService db) =>
-    Results.Ok(await db.GetAsync<Book, BookDTO>())); 
+app.MapGet("/api/books/{id}", async Task<IResult> (IDbService db, int id, bool include) =>
+    await db.HttpSingleAsync<Book, BookDTO>(id, include));
+app.MapGet("/api/books", async Task<IResult> (IDbService db, bool include) =>
+    await db.HttpGetAsync<Book, BookDTO>(include));
 app.MapPost("/api/books", async Task<IResult> (IDbService db, BookBaseDTO dto) =>
-{
-     try
-    {
-        var entity = await db.AddAsync<Book, BookBaseDTO>(dto);
-        if (await db.SaveChangesAsync())
-            return Results.Created($"/Books/{entity.Id}", entity);
-    }
-    catch (Exception ex)
-    {
-        return Results.BadRequest($"Couldn't add the book.\n{ex}.");
-    }
-
-    return Results.BadRequest($"Couldn't add the book.");
-});
+    await db.HttpPostAsync<Book, BookBaseDTO>(dto));
 app.MapPut("/api/books/{id}", async Task<IResult> (IDbService db, int id, BookMiniDTO dto) =>
-{
-     try
-    {
-        if (!await db.AnyAsync<Book>(e => e.Id.Equals(id))) return Results.NotFound();
-        
-        db.Update<Book, BookMiniDTO>(id, dto);
-        if (await db.SaveChangesAsync()) return Results.NoContent();
-    }
-    catch (Exception ex)
-    {
-        return Results.BadRequest($"Couldn't update the book.\n{ex}.");
-    }
-
-    return Results.BadRequest($"Couldn't update the book.");
-});
+    await db.HttpPutAsync<Book, BookMiniDTO>(id, dto));
 app.MapDelete("/api/books/{id}", async Task<IResult> (IDbService db, int id) =>
-{
-     try
-    {
-        if(!await db.DeleteAsync<Book>(id)) return Results.NotFound();
-        if (await db.SaveChangesAsync()) return Results.NoContent();
-    }
-    catch (Exception ex)
-    {
-        return Results.BadRequest($"Couldn't remove the book.\n{ex}.");
-    }
-
-    return Results.BadRequest($"Couldn't remove the book.");
-});
+    await db.HttpDeleteAsync<Book>(id));
 
 app.Run();
 
