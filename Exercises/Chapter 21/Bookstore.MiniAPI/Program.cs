@@ -13,6 +13,17 @@ builder.Services.AddDbContext<BookstoreContext>(
 ConfigureAutoMapper(builder.Services);
 RegisterServices(builder.Services);
 
+var _corsName = "CORS";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(name: _corsName,
+    policy =>
+    {
+        policy.WithOrigins("http://localhost:5000", "https://localhost:5001")
+              .AllowAnyMethod().AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 RegisterMiddleware(app);
@@ -25,6 +36,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// Configure CORRS
+app.UseCors(_corsName);
 
 app.Run();
 
