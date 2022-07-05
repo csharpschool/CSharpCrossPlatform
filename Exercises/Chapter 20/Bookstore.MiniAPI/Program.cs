@@ -63,6 +63,7 @@ void RegisterServices(IServiceCollection services)
     services.AddTransient<IApi, BookApi>();
     services.AddTransient<IApi, PublisherApi>();
     services.AddTransient<IApi, AuthorApi>();
+    services.AddTransient<IApi, AuthorBookApi>();
 }
 
 void RegisterMiddleware(WebApplication app)
