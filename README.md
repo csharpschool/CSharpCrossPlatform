@@ -1,2 +1,2 @@
 # CSharpCrossPlatform
-Exercises and Examples for the C# 10 book.
+Exercises for the *C# 10 and .NET 6* book.
